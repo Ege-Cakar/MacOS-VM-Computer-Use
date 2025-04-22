@@ -1,4 +1,4 @@
-# UTM-Computer-Use
+# MacOS-Computer-Use
 
 A tool for remote control and automation of virtual machines through VNC, with a focus on UTM virtual machines.
 
