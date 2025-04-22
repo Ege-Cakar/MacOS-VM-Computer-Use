@@ -92,7 +92,7 @@ However, it's typically used through the client application.
 The client application connects to the MCP server and provides an interface for interacting with the virtual machine:
 
 ```bash
-python client.py vnc
+python client.py vnc_mcp.py
 ```
 
 This will start the client and connect it to the VNC MCP server.
@@ -100,7 +100,7 @@ This will start the client and connect it to the VNC MCP server.
 You can also specify multiple servers:
 
 ```bash
-python client.py vnc memory
+python client.py vnc_mcp.py memory
 ```
 
 #### Client Command-line Options
