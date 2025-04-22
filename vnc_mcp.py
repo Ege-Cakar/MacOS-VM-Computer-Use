@@ -345,11 +345,41 @@ async def run_ssh_command(host, user, pwd, cmd):
 async def setup_default_connection(vnc_manager):
     """Set up the default VNC connection"""
     try:
+        # Default fallback values
+        default_uri = "vnc://claude:1234@192.168.64.3"
+        default_ssh_user = "claude"
+        default_ssh_password = "1234"
+        
+        # Try to read credentials from file
+        credentials_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), "credentials.txt")
+        if os.path.exists(credentials_file):
+            try:
+                with open(credentials_file, 'r') as f:
+                    lines = [line.strip() for line in f.readlines() if line.strip() and not line.strip().startswith('#')]
+                    config = {}
+                    for line in lines:
+                        if '=' in line:
+                            key, value = line.split('=', 1)
+                            config[key.strip()] = value.strip()
+                    
+                    # Extract values with fallbacks
+                    uri = config.get('VNC_URI', default_uri)
+                    ssh_user = config.get('SSH_USER', default_ssh_user)
+                    ssh_password = config.get('SSH_PASSWORD', default_ssh_password)
+                    
+                    log(f"Loaded credentials from {credentials_file}")
+            except Exception as e:
+                log(f"Error reading credentials file: {e}")
+                uri, ssh_user, ssh_password = default_uri, default_ssh_user, default_ssh_password
+        else:
+            log(f"Credentials file not found at {credentials_file}, using defaults")
+            uri, ssh_user, ssh_password = default_uri, default_ssh_user, default_ssh_password
+        
         await vnc_manager.register_connection(
             "default",
-            "vnc://claude:1234@192.168.64.3",
-            ssh_user="claude",
-            ssh_password="1234"
+            uri,
+            ssh_user=ssh_user,
+            ssh_password=ssh_password
         )
         log("Default connection registered")
     except Exception as e:
@@ -659,4 +689,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-    

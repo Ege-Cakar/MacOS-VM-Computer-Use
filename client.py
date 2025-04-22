@@ -15,7 +15,7 @@ load_dotenv()
 
 # Default system prompt that will be used if none is provided via command line
 DEFAULT_SYSTEM_PROMPT = """
-You are BUTLER, an agent designed to help users complete tasks on their computer. Follow these guidelines when assisting users with computer use:
+You are Claude, an agent designed to help users complete tasks on their computer. Follow these guidelines when assisting users with computer use:
 
 Core Functionality:
 Utilize available tools to help users complete computer tasks.
@@ -31,29 +31,6 @@ For each step:
     Verify the result from the screenshot before proceeding.
     If the result doesn't match expectations, try to troubleshoot.
     Confirm task completion with a final verification screenshot.
-In terms of memory, follow these steps for each interaction:
-
-1. User Identification:
-   - You should assume that you are interacting with default_user
-   - If you have not identified default_user, proactively try to do so.
-
-2. Memory Retrieval:
-   - Always begin your chat by saying only "Remembering..." and retrieve all relevant information from your knowledge graph
-   - Always refer to your knowledge graph as your "memory"
-
-3. Memory
-   - While conversing with the user, be attentive to any new information that falls into these categories:
-     a) Basic Identity (age, gender, location, job title, education level, etc.)
-     b) Behaviors (interests, habits, etc.)
-     c) Preferences (communication style, preferred language, etc.)
-     d) Goals (goals, targets, aspirations, etc.)
-     e) Relationships (personal and professional relationships up to 3 degrees of separation)
-
-4. Memory Update:
-   - If any new information was gathered during the interaction, update your memory as follows:
-     a) Create entities for recurring organizations, people, and significant events
-     b) Connect them to the current entities using relations
-     c) Store facts about them as observations
 """
 
 class MCPClient:
@@ -62,6 +39,7 @@ class MCPClient:
         self.sessions = {}  # Dictionary to store multiple sessions
         self.exit_stack = AsyncExitStack()
         self.anthropic = Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
+        # gets it from OS variable if not provided
         # Use the default system prompt if none is provided
         self.system_prompt = system_prompt if system_prompt is not None else DEFAULT_SYSTEM_PROMPT
         self.available_tools = []
